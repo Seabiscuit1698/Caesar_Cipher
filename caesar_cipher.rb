@@ -1,7 +1,7 @@
 require 'pry'
 
 def caesar_cipher(string, shift)
-  chars = string.split("")
+  chars = string.downcase.split("")
   alphabet = "abcdefghijklmnopqrstuvwxyz"
   alphabet = alphabet.split("")
   alphabet_positions = {}
@@ -24,13 +24,21 @@ def caesar_cipher(string, shift)
     if position == ' '
       new_positions.push(' ')
     else
-      if new_position + shift > 0 && new_position + shift <= 26
+      if position + shift > 0 && position + shift <= 26
         new_position = position + shift
         new_positions.push(new_position)
-      elsif new_position + shift < 0
-        #do this
+      elsif position + shift <= 0
+        remainder = shift.abs - position.abs
+        new_position = 26 - remainder.abs
+        new_positions.push(new_position)
+        remainder = 0
       else
-        #do this
+        remainder = 27 - position
+        fixed_shift = shift - remainder
+        new_position = remainder + fixed_shift
+        new_positions.push(new_position)
+        remainder = 0
+        fixed_shift = 0
       end
     end
   end
@@ -44,8 +52,13 @@ def caesar_cipher(string, shift)
     end
   end
   cipher = cipher.join("")
-  binding.pry
+  p cipher
   return cipher
 end
 
-caesar_cipher('cat dog', 2)
+puts "Enter a phrase to encrypt: "
+string = gets.chomp.to_s
+puts "Enter a number to adjust the encryption: "
+shift = gets.chomp.to_i
+
+caesar_cipher(string, shift)
